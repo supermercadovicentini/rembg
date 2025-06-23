@@ -1,16 +1,9 @@
-FROM python:3.10-slim
+FROM python:3.9-slim
 
-WORKDIR /rembg
+RUN apt-get update && \
+    apt-get install -y libglib2.0-0 libsm6 libxrender1 libxext6 && \
+    pip install rembg
 
-RUN pip install --upgrade pip
+EXPOSE 5000
 
-RUN apt-get update && apt-get install -y curl && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-COPY . .
-
-RUN python -m pip install ".[cpu,cli]"
-RUN rembg d u2net
-
-EXPOSE 7000
-ENTRYPOINT ["rembg"]
-CMD ["--help"]
+CMD ["rembg", "serve"]
